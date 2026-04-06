@@ -1,0 +1,1015 @@
+openapi: 3.0.3
+info:
+  title: Lay-Z-Spa Mobile API
+  version: 0.1.0
+  description: |
+    Generated from static analysis of `com.wiltonbradley.layzspaapp` (v2.2.2).
+
+    This spec is reconstructed from Retrofit interfaces and request interceptors
+    found in the APK. It is suitable as a working Swagger/OpenAPI baseline, but
+    some request/response schemas are intentionally generic because only client
+    types and paths were statically available.
+
+    Observed request headers:
+    - `Authorization: token <token>`
+    - `giz_Token: <giz_token>`
+    - `appid: <appId>`
+    - `nonce: <32-char random string>`
+    - `ts: <unix timestamp>`
+    - `sign: MD5(appId + appSecret + nonce + ts).toUpperCase()`
+    - `pushtype: Android`
+    - `accept-language` or `lancode`
+
+    Embedded app constants:
+    - `appId`: `AhFLL54HnChhrxcl9ZUJL6QNfolTIB`
+    - `appSecret`: `4ECvVs13enL5AiYSmscNjvlaisklQDz7vWPCCWXcEFjhWfTmLT`
+    - `gizappId`: `98754e684ec045528b073876c34c7348`
+    - `gizappSecret`: `1d69eda66af64662a6f1b31f0b42eab2`
+servers:
+  - url: https://smarthub-us.bestwaycorp.com
+    description: US production
+  - url: https://smarthub-eu.bestwaycorp.com
+    description: EU production
+  - url: https://smarthub.bestwaycorp.cn
+    description: China production
+  - url: http://bestway.dev.mxchip.com.cn
+    description: Embedded dev target
+tags:
+  - name: auth
+  - name: gizwits
+  - name: device
+  - name: home
+  - name: message
+  - name: content
+  - name: ota
+paths:
+  /api/enduser/get_token:
+    post:
+      tags: [auth]
+      summary: User login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginReq'
+      responses:
+        '200':
+          description: Login response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginTokenResponse'
+  /api/enduser/check_account:
+    post:
+      tags: [auth]
+      summary: Check whether an account exists
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CheckAccountReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/check_active:
+    get:
+      tags: [auth]
+      summary: Check account activation state
+      parameters:
+        - name: account
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/signup:
+    post:
+      tags: [auth]
+      summary: User signup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignUpReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/visitor:
+    post:
+      tags: [auth]
+      summary: Guest login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginGuestReq'
+      responses:
+        '200':
+          description: Guest login response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginTokenResponse'
+  /api/enduser/send_confirm_email:
+    post:
+      tags: [auth]
+      summary: Send confirmation email
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgetCheckActiveReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/set_password:
+    post:
+      tags: [auth]
+      summary: Set password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignPasswordReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/password_reset/:
+    post:
+      tags: [auth]
+      summary: Password reset
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SignPasswordReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/gizwits/users:
+    post:
+      tags: [gizwits]
+      summary: Create Gizwits-linked user
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GizUserReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    put:
+      tags: [gizwits]
+      summary: Update Gizwits-linked user password/profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GizUserReq'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/gizwits/login:
+    post:
+      tags: [gizwits]
+      summary: Gizwits login bootstrap
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GIZLoginReq'
+      responses:
+        '200':
+          description: Gizwits login response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginTokenResponse'
+  /api/enduser/gizwits/choice:
+    get:
+      tags: [gizwits]
+      summary: Get Gizwits choice/config
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/gizwits/reset_password:
+    post:
+      tags: [gizwits]
+      summary: Reset Gizwits password
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties:
+                type: string
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/grant_device/:
+    post:
+      tags: [device]
+      summary: Grant device access
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/guidence:
+    get:
+      tags: [device]
+      summary: Get guidance
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/product_tub:
+    get:
+      tags: [device]
+      summary: List product tubs
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    post:
+      tags: [device]
+      summary: Create/update product tub selection
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/product_category:
+    get:
+      tags: [device]
+      summary: List product categories
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/product_series:
+    get:
+      tags: [device]
+      summary: List product series
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/home/room/devices:
+    get:
+      tags: [home]
+      summary: List devices in a room
+      parameters:
+        - name: room_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    post:
+      tags: [home]
+      summary: Add/update room devices mapping
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/account_cancel/:
+    post:
+      tags: [auth]
+      summary: Cancel account
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/homes:
+    get:
+      tags: [home]
+      summary: List homes
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    post:
+      tags: [home]
+      summary: Create home
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/home/rooms:
+    get:
+      tags: [home]
+      summary: List rooms
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    post:
+      tags: [home]
+      summary: Create room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/home:
+    delete:
+      tags: [home]
+      summary: Delete home
+      parameters:
+        - name: home_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    put:
+      tags: [home]
+      summary: Update home
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/home/room:
+    delete:
+      tags: [home]
+      summary: Delete room
+      parameters:
+        - name: room_id
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    put:
+      tags: [home]
+      summary: Update room
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/enduser_info/:
+    get:
+      tags: [auth]
+      summary: Get enduser profile
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    post:
+      tags: [auth]
+      summary: Update enduser profile
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/feedback/:
+    post:
+      tags: [content]
+      summary: Submit feedback
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/product_cloud:
+    get:
+      tags: [device]
+      summary: Get product cloud config
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/product_pannel:
+    get:
+      tags: [device]
+      summary: Get product panel
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/report/stat:
+    post:
+      tags: [content]
+      summary: Report analytics/stat
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/sign_out/:
+    post:
+      tags: [auth]
+      summary: Sign out
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/home/switch:
+    post:
+      tags: [home]
+      summary: Switch active home
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/upload_file/:
+    post:
+      tags: [content]
+      summary: Upload file
+      parameters:
+        - name: file_type
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                part:
+                  type: string
+                  format: binary
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/message/:
+    get:
+      tags: [message]
+      summary: List messages
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    delete:
+      tags: [message]
+      summary: Delete message(s)
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/message/is_all_read:
+    get:
+      tags: [message]
+      summary: Check if all messages are read
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/message_is_read/:
+    put:
+      tags: [message]
+      summary: Mark message(s) as read
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/devices/:
+    get:
+      tags: [device]
+      summary: Get device details
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/endusers/:
+    post:
+      tags: [device]
+      summary: List device-bound endusers
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/share_code/:
+    post:
+      tags: [device]
+      summary: Create share code
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/unbind_device/:
+    delete:
+      tags: [device]
+      summary: Unbind current device
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/unbind_enduser_device/:
+    delete:
+      tags: [device]
+      summary: Unbind another enduser from a device
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/app_ota/:
+    get:
+      tags: [ota]
+      summary: Get OTA info
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+    post:
+      tags: [ota]
+      summary: Submit OTA action
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/update_device_name/:
+    put:
+      tags: [device]
+      summary: Update device name
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/directional_ota/check:
+    get:
+      tags: [ota]
+      summary: Check directional OTA
+      description: Decompiled client uses GET with a body object, which is unusual. This may be an implementation artifact or non-standard server behavior.
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/product/app_about_bestway/app:
+    get:
+      tags: [content]
+      summary: About Bestway content
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/product/app_faq_help/app:
+    get:
+      tags: [content]
+      summary: FAQ/help content
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/product/app_privacy_policy/app:
+    get:
+      tags: [content]
+      summary: Privacy policy content
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/product/app_user_agreement/app:
+    get:
+      tags: [content]
+      summary: User agreement content
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/enduser/configuration_center/links:
+    get:
+      tags: [content]
+      summary: Configuration center links
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/product/faq_for_product/detail:
+    get:
+      tags: [content]
+      summary: Product FAQ detail
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/product/product_series/info:
+    get:
+      tags: [device]
+      summary: Product series detail
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/product/trouble_shooting:
+    get:
+      tags: [content]
+      summary: Troubleshooting content
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/bind/status:
+    get:
+      tags: [device]
+      summary: Device bind status
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/bind/code:
+    get:
+      tags: [device]
+      summary: Device bind code
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/ble/encryption/random/:
+    get:
+      tags: [device]
+      summary: BLE encryption random
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/ble/encryption/verify/:
+    post:
+      tags: [device]
+      summary: BLE encryption verify
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/command:
+    post:
+      tags: [device]
+      summary: Device command
+      description: Generic command endpoint inferred from `ApiUrl.COMMAND`.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FreeFormObject'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+  /api/device/thing_shadow/:
+    get:
+      tags: [device]
+      summary: Thing shadow
+      parameters:
+        - $ref: '#/components/parameters/GenericQuery'
+      responses:
+        '200':
+          $ref: '#/components/responses/BaseResponse'
+components:
+  securitySchemes:
+    AuthorizationToken:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: "Format observed in app: `token <token>`"
+    GizToken:
+      type: apiKey
+      in: header
+      name: giz_Token
+    AppId:
+      type: apiKey
+      in: header
+      name: appid
+    Nonce:
+      type: apiKey
+      in: header
+      name: nonce
+    Timestamp:
+      type: apiKey
+      in: header
+      name: ts
+    Signature:
+      type: apiKey
+      in: header
+      name: sign
+    PushType:
+      type: apiKey
+      in: header
+      name: pushtype
+    AcceptLanguage:
+      type: apiKey
+      in: header
+      name: accept-language
+    LanCode:
+      type: apiKey
+      in: header
+      name: lancode
+  parameters:
+    GenericQuery:
+      name: q
+      in: query
+      required: false
+      schema:
+        type: string
+      description: Placeholder for one or more query parameters passed via Retrofit `@QueryMap`.
+  schemas:
+    FreeFormObject:
+      type: object
+      additionalProperties: true
+    LoginReq:
+      type: object
+      required: [account, password, marketing_notification, registration_id, client_id, timezone]
+      properties:
+        account:
+          type: string
+        password:
+          type: string
+        marketing_notification:
+          type: integer
+        registration_id:
+          type: string
+        client_id:
+          type: string
+        timezone:
+          type: string
+        app_id:
+          type: string
+          default: AhFLL54HnChhrxcl9ZUJL6QNfolTIB
+        brand:
+          type: string
+          default: Huawei
+        push_type:
+          type: string
+          default: android
+        lan_code:
+          type: string
+      additionalProperties: false
+    LoginGuestReq:
+      type: object
+      required: [visitor_id, registration_id, client_id, marketing_notification, timezone]
+      properties:
+        visitor_id:
+          type: string
+        registration_id:
+          type: string
+        push_type:
+          type: string
+          default: android
+        app_id:
+          type: string
+          default: AhFLL54HnChhrxcl9ZUJL6QNfolTIB
+        lan_code:
+          type: string
+        brand:
+          type: string
+          default: Huawei
+        client_id:
+          type: string
+        marketing_notification:
+          type: integer
+        timezone:
+          type: string
+        location:
+          type: string
+      additionalProperties: false
+    GIZLoginReq:
+      type: object
+      required: [account, password, marketing_notification, registration_id, client_id, timezone]
+      properties:
+        account:
+          type: string
+        password:
+          type: string
+        marketing_notification:
+          type: integer
+        registration_id:
+          type: string
+        client_id:
+          type: string
+        timezone:
+          type: string
+        app_id:
+          type: string
+          default: 98754e684ec045528b073876c34c7348
+          description: Gizwits app id used by the client
+        brand:
+          type: string
+          default: Huawei
+        push_type:
+          type: string
+          default: android
+        lan_code:
+          type: string
+        location:
+          type: string
+      additionalProperties: false
+    SignUpReq:
+      type: object
+      required: [account]
+      properties:
+        account:
+          type: string
+        location:
+          type: string
+        app_id:
+          type: string
+          default: AhFLL54HnChhrxcl9ZUJL6QNfolTIB
+      additionalProperties: false
+    SignPasswordReq:
+      type: object
+      required: [account, password]
+      properties:
+        account:
+          type: string
+        password:
+          type: string
+        app_id:
+          type: string
+          default: AhFLL54HnChhrxcl9ZUJL6QNfolTIB
+      additionalProperties: false
+    CheckAccountReq:
+      type: object
+      required: [account, check_type]
+      properties:
+        account:
+          type: string
+        check_type:
+          type: string
+        app_id:
+          type: string
+          default: AhFLL54HnChhrxcl9ZUJL6QNfolTIB
+      additionalProperties: false
+    ForgetCheckActiveReq:
+      type: object
+      required: [email]
+      properties:
+        email:
+          type: string
+          format: email
+      additionalProperties: false
+    GizUserReq:
+      type: object
+      description: Request body for `/api/enduser/gizwits/users`; decompiled client uses a string map.
+      additionalProperties:
+        type: string
+    LoginToken:
+      type: object
+      required: [enduser_id, token, lan_code, giz_token, giz_uid]
+      properties:
+        enduser_id:
+          type: string
+        token:
+          type: string
+        lan_code:
+          type: string
+        giz_token:
+          type: string
+        giz_uid:
+          type: string
+      additionalProperties: false
+    LoginTokenResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        code:
+          type: integer
+          nullable: true
+        msg:
+          type: string
+          nullable: true
+        data:
+          $ref: '#/components/schemas/LoginToken'
+    BaseResponse:
+      type: object
+      additionalProperties: true
+      properties:
+        code:
+          type: integer
+          nullable: true
+        msg:
+          type: string
+          nullable: true
+        data:
+          nullable: true
+  responses:
+    BaseResponse:
+      description: Generic application response wrapper
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BaseResponse'
+security:
+  - AuthorizationToken: []
+    AppId: []
+    Nonce: []
+    Timestamp: []
+    Signature: []
+    PushType: []
